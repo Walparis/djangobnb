@@ -5,7 +5,7 @@ import { useState } from "react";
 import MenuLink from "./MenuLink";
 
 import useLoginModal from "@/app/hooks/useLoginModal";
-import useSignupModal from "../modals/useSignupModal";
+import useSignupModal from "../../hooks/useSignupModal";
 
 import LogoutButton from "../LogoutButton";
 
