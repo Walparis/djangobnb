@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
-import useSignupModal from "./useSignupModal";
+import useSignupModal from "../../hooks/useSignupModal";
 import Modal from "./Modal";
 import CustomButton from "../forms/CustomButton";
 import apiService from "@/app/services/apiService";
