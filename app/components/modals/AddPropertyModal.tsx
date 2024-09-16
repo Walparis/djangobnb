@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { ChangeEvent, useState } from "react";
 import Image from "next/image";
 
 import Modal from "./Modal";
@@ -10,9 +10,11 @@ import useAddPropertyModal from "@/app/hooks/useAddPropertyModal";
 import Categories from "../addproperty/Categories";
 
 import CustomButton from "../forms/CustomButton";
+import SelectCountry, { SelectCountryValue } from "../forms/SelectCountry";
 
 const AddPropertyModal = () => {
   const [currentStep, setCurrentStep] = useState(1);
+
   const [dataCategory, setDataCategory] = useState("");
   const [dataTitle, setDataTitle] = useState("");
   const [dataDescription, setDataDescription] = useState("");
@@ -20,11 +22,21 @@ const AddPropertyModal = () => {
   const [dataBedrooms, setDataBedrooms] = useState("");
   const [dataBathrooms, setDataBathrooms] = useState("");
   const [dataGuests, setDataGuests] = useState("");
+  const [dataCountry, setDataCountry] = useState<SelectCountryValue>();
+  const [dataImage, setDataImage] = useState<File | null>(null);
 
   const addPropertyModal = useAddPropertyModal();
 
   const setCategory = (category: string) => {
     setDataCategory(category);
+  };
+
+  const setImage = (event: ChangeEvent<HTMLInputElement>) => {
+    if (event.target.files && event.target.files.length > 0) {
+      const tmpImage = event.target.files[0];
+
+      setDataImage(tmpImage);
+    }
   };
 
   const content = (
@@ -135,7 +147,12 @@ const AddPropertyModal = () => {
         <>
           <h2 className="mb-6 text-2xl">Location</h2>
 
-          <div className="pt-3 pb-6 space-y-4">Select Coutry</div>
+          <div className="pt-3 pb-6 space-y-4">
+            <SelectCountry
+              value={dataCountry}
+              onChange={(value) => setDataCountry(value as SelectCountryValue)}
+            />
+          </div>
 
           <CustomButton
             className="mb-2 bg-black hover:bg-gray-800"
@@ -145,7 +162,33 @@ const AddPropertyModal = () => {
           <CustomButton label="Next" onClick={() => setCurrentStep(5)} />
         </>
       ) : (
-        <></>
+        <>
+          <h2 className="mb-6 text-2xl">Image</h2>
+
+          <div className="pt-3 pb-6 space-y-4">
+            <div className="py-4 px-6 bg-gray-600 text-white rounded-xl">
+              <input type="file" accept="image/*" onChange={setImage} />
+            </div>
+
+            {dataImage && (
+              <div className="w-[200px] h-[150px] relative">
+                <Image
+                  fill
+                  alt="Uploaded image"
+                  src={URL.createObjectURL(dataImage)}
+                  className="w-full h-full object-cover rounded-xl"
+                />
+              </div>
+            )}
+          </div>
+
+          <CustomButton
+            className="mb-2 bg-black hover:bg-gray-800"
+            label="Previous"
+            onClick={() => setCurrentStep(3)}
+          />
+          <CustomButton label="Submit" onClick={() => console.log("Submit")} />
+        </>
       )}
     </>
   );
