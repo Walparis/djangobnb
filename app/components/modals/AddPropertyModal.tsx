@@ -11,9 +11,14 @@ import Categories from "../addproperty/Categories";
 
 import CustomButton from "../forms/CustomButton";
 import SelectCountry, { SelectCountryValue } from "../forms/SelectCountry";
+import apiService from "@/app/services/apiService";
+import { useRouter } from "next/navigation";
 
 const AddPropertyModal = () => {
+  const router = useRouter();
+
   const [currentStep, setCurrentStep] = useState(1);
+  const [erros, setErrors] = useState<string[]>([]);
 
   const [dataCategory, setDataCategory] = useState("");
   const [dataTitle, setDataTitle] = useState("");
@@ -36,6 +41,54 @@ const AddPropertyModal = () => {
       const tmpImage = event.target.files[0];
 
       setDataImage(tmpImage);
+    }
+  };
+
+  const submitForm = async () => {
+    console.log("Submit form");
+    if (
+      dataCategory &&
+      dataTitle &&
+      dataDescription &&
+      dataPrice &&
+      dataCountry &&
+      dataImage
+    ) {
+      const formData = new FormData();
+
+      formData.append("category", dataCategory);
+      formData.append("title", dataTitle);
+      formData.append("description", dataDescription);
+      formData.append("price_per_night", dataPrice);
+      formData.append("bedrooms", dataBedrooms);
+      formData.append("bathrooms", dataBathrooms);
+      formData.append("guests", dataGuests);
+      formData.append("country", dataCountry.label);
+      formData.append("country_code", dataCountry.value);
+      formData.append("image", dataImage);
+
+      const response = await apiService.post(
+        "/api/properties/create/",
+        formData
+      );
+
+      if (response.success) {
+        console.log("SUCCESS");
+
+        router.push("/");
+
+        addPropertyModal.close();
+      } else {
+        console.log("Error");
+
+        const tmpErrors: string[] = Object.values(response).map(
+          (error: any) => {
+            return error;
+          }
+        );
+
+        setErrors(tmpErrors);
+      }
     }
   };
 
@@ -182,12 +235,23 @@ const AddPropertyModal = () => {
             )}
           </div>
 
+          {errors.map((error, index) => {
+            return (
+              <div
+                key={index}
+                className="p-5 mb-4 bg-airbnb text-white rounded-xl opacity-80"
+              >
+                {error}
+              </div>
+            );
+          })}
+
           <CustomButton
             className="mb-2 bg-black hover:bg-gray-800"
             label="Previous"
             onClick={() => setCurrentStep(3)}
           />
-          <CustomButton label="Submit" onClick={() => console.log("Submit")} />
+          <CustomButton label="Submit" onClick={submitForm} />
         </>
       )}
     </>
