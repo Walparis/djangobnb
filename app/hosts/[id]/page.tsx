@@ -29,7 +29,7 @@ const HostDetailPage = async ({ params }: { params: { id: string } }) => {
 
         <div className="col-span-1 md:col-span-3 pl-0 md:pl-6">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <PropertyList host_id={params.id} />
+            <PropertyList host_id={userId} />
           </div>
         </div>
       </div>
