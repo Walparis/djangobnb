@@ -1,4 +1,3 @@
-import Image from "next/image";
 import PropertyList from "../components/properties/PropertyList";
 import { getUserId } from "../lib/actions";
 
