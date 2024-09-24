@@ -7,6 +7,8 @@ import MenuLink from "./MenuLink";
 import useLoginModal from "@/app/hooks/useLoginModal";
 import useSignupModal from "../../hooks/useSignupModal";
 
+import { useRouter } from "next/navigation";
+
 import LogoutButton from "../LogoutButton";
 
 interface UserNavProps {
@@ -14,6 +16,8 @@ interface UserNavProps {
 }
 const UserNav: React.FC<UserNavProps> = ({ userId }) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const router = useRouter();
 
   const loginModal = useLoginModal();
   const signupModal = useSignupModal();
@@ -55,7 +59,17 @@ const UserNav: React.FC<UserNavProps> = ({ userId }) => {
       {isOpen && (
         <div className="w-[220px] absolute top-[60px] right-0 bg-white border rounded-xl shadow-md flex flex-col cursor-pointer">
           {userId ? (
-            <LogoutButton />
+            <>
+              <MenuLink
+                onClick={() => {
+                  setIsOpen(false);
+                  router.push(`/my_properties`);
+                }}
+                label="My properties"
+              ></MenuLink>
+
+              <LogoutButton />
+            </>
           ) : (
             <>
               <MenuLink
